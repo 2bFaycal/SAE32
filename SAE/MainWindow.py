@@ -135,6 +135,8 @@ class client(QMainWindow):
         dtime = data + time.strftime("  reçu à %H:%M")
         self.lab6.setText(dtime)
 
+        
+
 
 
 
