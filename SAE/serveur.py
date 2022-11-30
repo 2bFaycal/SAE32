@@ -1,43 +1,74 @@
 import socket
-import sys
 import time
-import threading
+import psutil
+import platform
 
 
-def server():
-    host = socket.gethostname()
-    port = 6000
-    serveur_socket = socket.socket()
-    serveur_socket.bind((host, port))
+os = platform.system()
+ram = psutil.virtual_memory()
+cpu = psutil.cpu_percent()
+name = socket.gethostname()
+ip = socket.gethostbyname(name)
 
-    serveur_socket.listen(5)
-    conn, address = serveur_socket.accept()
-    print("Serveur en écoute", str(address))
 
-    data = input(" -> ")
+host = socket.gethostname()
+port = 6000
+
+serveur_socket = socket.socket()
+serveur_socket.bind((host, port))
+serveur_socket.listen(5)
+
+print("Serveur en écoute")
+conn, address = serveur_socket.accept()
+print("Serveur connecté à ", str(address))
+
+msg = ""
+
+while msg != 'bye':
+
+    msg = conn.recv(1024).decode()
+    message = msg + time.strftime("  reçu à %H:%M:%S")
+    print('from Client: ' + message)
+
+    if msg == 'cpu':
+        reply = str(cpu)
+        conn.send(str(cpu).encode())
+        print("CPU envoyé" + time.strftime("  à %H:%M:%S"))
+
+
+    elif msg == 'ram':
+        reply = str(ram)
+        conn.send(str(ram).encode())
+        print("RAM envoyé" + time.strftime("  à %H:%M:%S"))
+        
+
+    elif msg == 'os':
+        reply = str(os)
+        conn.send(str(os).encode())
+        print("OS envoyé" + time.strftime("  à %H:%M:%S"))
+
+
+    elif msg == 'name':
+        reply = str(name)
+        conn.send(str(name).encode())
+        print("Name envoyé" + time.strftime("  à %H:%M:%S"))
+
     
-    while True:
-        data = conn.recv(1024).decode()
-        data = data + time.strftime("  reçu à %H:%M:%S")
-        print("from Fays: " + str(data))
-        if not data:
-            break
-        data = input(' -> ')
-        conn.send(data.encode())
-    conn.close()
+    elif msg == 'ip':
+        reply = str(ip)
+        conn.send(str(ip).encode())
+        print("IP envoyé" + time.strftime("  à %H:%M:%S"))
+
+
+    else:
+        reply = input(" -> ")        
+        conn.send(reply.encode())
+
+        msg = conn.recv(1024).decode()
+        message = msg + time.strftime("  reçu à %H:%M:%S")        
+        print("from Client: " + message)
+
+conn.close()
 
 
 
-    
-
-
-
-
-
-
-
-
-
-
-if __name__ == '__main__':
-    server()
