@@ -7,6 +7,7 @@ import time
 import psutil
 import platform
 
+
 os = platform.system()
 ram = psutil.virtual_memory()
 cpu = psutil.cpu_percent()
@@ -135,7 +136,7 @@ class client(QMainWindow):
         dtime = data + time.strftime("  reçu à %H:%M")
         self.lab6.setText(dtime)
 
-        
+
 
 
 
