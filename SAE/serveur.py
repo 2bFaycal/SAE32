@@ -2,14 +2,14 @@ import socket
 import time
 import psutil
 import platform
-
+import sys
+import os
 
 os = platform.system()
 ram = psutil.virtual_memory()
 cpu = psutil.cpu_percent()
 name = socket.gethostname()
 ip = socket.gethostbyname(name)
-
 
 host = socket.gethostname()
 port = 6000
@@ -24,7 +24,7 @@ print("Serveur connecté à ", str(address))
 
 msg = ""
 
-while msg != 'bye':
+while msg != 'arret':
 
     msg = conn.recv(1024).decode()
     message = msg + time.strftime("  reçu à %H:%M")
@@ -59,23 +59,18 @@ while msg != 'bye':
         conn.send(str(ip).encode())
         print("IP envoyé" + time.strftime("  à %H:%M"))
 
+
     elif msg == 'ping':
-        ip = message.split()[1]
-        result = str(os.system("ping" + ip))
+        temp = msg.split()[1]
+        result = os.system("ping -c 1" + temp)
         if result == 0:
-            reply = "ping réussi"
-        else :
-            reply = "ping échoué"
-
-    else:
-        reply = input(" -> ")        
-        conn.send(reply.encode())
-
-        msg = conn.recv(1024).decode()
-        message = msg + time.strftime("  reçu à %H:%M")        
-        print("from Client: " + message)
+            conn.send("{} atteint".format(temp).encode())
+        else:
+            conn.send("inconnu".encode())
+            
 
 conn.close()
+
 
 
 

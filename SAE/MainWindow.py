@@ -6,6 +6,7 @@ import socket
 import time
 import psutil
 import platform
+import os
 
 
 os = platform.system()
@@ -33,9 +34,12 @@ class client(QMainWindow):
         ip = QPushButton("IP")
         name = QPushButton("NAME")
         disconnect = QPushButton("DISCONNECT")
-        bye = QPushButton("BYE")
-        bye.clicked.connect(self.close)
-        ping = QPushButton("PING")
+        disconnect.clicked.connect(self.close)
+        arret = QPushButton("ARRET")
+        arret.clicked.connect(self.close)
+        self.__ping = QLineEdit("")
+        ping1 = QPushButton("PING")
+        clear = QPushButton("CLEAR")
  
         self.lab1 = QLabel("")
         self.lab2 = QLabel("")
@@ -50,24 +54,26 @@ class client(QMainWindow):
         grid.addWidget(ip, 6, 1, 1, 2)
         grid.addWidget(name, 8, 1, 1, 2)
         grid.addWidget(disconnect, 10, 1, 1, 2)
-        grid.addWidget(bye, 11, 1, 1, 2)
-        grid.addWidget(ping, 12, 1, 1, 2)
+        grid.addWidget(arret, 11, 1, 1, 2)
+        grid.addWidget(self.__ping, 12, 1, 1, 2)
+        grid.addWidget(ping1, 13, 1, 1, 2)
+        grid.addWidget(clear, 15, 1, 1, 2)
 
         grid.addWidget(self.lab1, 1, 2)
         grid.addWidget(self.lab2, 3, 2)
         grid.addWidget(self.lab3, 5, 2)
         grid.addWidget(self.lab4, 7, 2)
         grid.addWidget(self.lab5, 9, 2)
-        grid.addWidget(self.lab6, 13, 1, 1, 2)
+        grid.addWidget(self.lab6, 14, 1, 1, 2)
 
         os.clicked.connect(self.__actionOS)
         ram.clicked.connect(self.__actionRAM)
         cpu.clicked.connect(self.__actionCPU)
         ip.clicked.connect(self.__actionIP)
         name.clicked.connect(self.__actionNAME)
-        disconnect.clicked.connect(self.__actionDISCONNECT)
-        ping.clicked.connect(self.__actionPING)
-
+        arret.clicked.connect(self.__actionARRET)
+        ping1.clicked.connect(self.__actionPING)
+        clear.clicked.connect(self.__actionCLEAR)
 
 
     def __actionOS(self):
@@ -79,7 +85,6 @@ class client(QMainWindow):
         self.lab1.setText(dtime)
 
 
-
     def __actionRAM(self):
         message = "ram"
         client_socket.send(message.encode())    
@@ -87,7 +92,6 @@ class client(QMainWindow):
         data = client_socket.recv(1024).decode()
         dtime = data + time.strftime("  reçu à %H:%M")
         self.lab2.setText(dtime)
-
 
 
     def __actionCPU(self):
@@ -117,19 +121,17 @@ class client(QMainWindow):
         self.lab5.setText(dtime)
 
 
-    def __actionDISCONNECT(self):
+    def __actionARRET(self):
         message = "arret"
         client_socket.send(message.encode())
-        print ('arret envoyé')
+        print ('requête arret envoyé')
         data = client_socket.recv(1024).decode()
         dtime = data + time.strftime("  reçu à %H:%M")
-        self.sortie.setText(dtime)
-        print ("Client déconnecté")
-        client_socket.close()
-        sys.exit()
+
 
     def __actionPING(self):
-        message = "ping"
+        message = "ping " + self.__ping.text()
+        print (message)
         client_socket.send(message.encode())
         print ('ping envoyé')
         data = client_socket.recv(1024).decode()
@@ -137,17 +139,15 @@ class client(QMainWindow):
         self.lab6.setText(dtime)
 
 
-
-
-
+    def __actionCLEAR(self):
+        self.lab1.setText("")
+        self.lab2.setText("")
+        self.lab3.setText("")
+        self.lab4.setText("")
+        self.lab5.setText("")
+        self.lab6.setText("")
 
         
-
-        
-
-
-
-
 if __name__ == "__main__":
 
     host = socket.gethostname()
