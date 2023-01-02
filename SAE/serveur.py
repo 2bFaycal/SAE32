@@ -4,6 +4,9 @@ import psutil
 import platform
 import sys
 import os
+import subprocess
+
+
 
 os = platform.system()
 ram = psutil.virtual_memory()
@@ -59,15 +62,16 @@ while msg != 'arret':
         conn.send(str(ip).encode())
         print("IP envoyé" + time.strftime("  à %H:%M"))
 
-
-    elif msg == 'ping':
+            
+    elif msg.startswith("ping"):
         temp = msg.split()[1]
-        result = os.system("ping -c 1" + temp)
-        if result == 0:
+        reply = os.system("ping -c 1 " + temp)
+        if reply == 0:
             conn.send("{} atteint".format(temp).encode())
         else:
             conn.send("inconnu".encode())
-            
+
+
 
 conn.close()
 
