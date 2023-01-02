@@ -1,4 +1,0 @@
-python3 C:\Users\fayca\OneDrive\Documents\GitHub\SAE32\SAE\serveur.py
-
-python3 C:\Users\fayca\OneDrive\Documents\GitHub\SAE32\SAE\MainWindow.py
-
